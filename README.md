@@ -6,10 +6,10 @@ Linked List – Music Player
 
 ### General design:
 The code must be designed to allow the storage of the following data:
-• any amount of songs with total size not exceeding 256MB
-• for each song we will store the title (string), artist (string), and size (int) in MB
-• the title and artist cannot be blank, when you display song list
-• the size of each song must be greater than zero
+- any amount of songs with total size not exceeding 256MB
+- for each song we will store the title (string), artist (string), and size (int) in MB
+- the title and artist cannot be blank, when you display song list
+- the size of each song must be greater than zero
 
 ### C++ Code design:
 - the number of MB of memory should be set when the MusicPlayer is "constructed" . Your constructor must create an empty list and set the total allowed memory size to the amount specified by the test program. This number should not exceed 256MB.
