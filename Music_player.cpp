@@ -1,10 +1,9 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int counter = 0;
-string s, artist, g, line;
-char c;
-struct MusicPlayer
+int counter = 0; //count the number of songs
+string s, artist, g, line; //declaring  the strings
+struct MusicPlayer //declaring the structure
 {
     string song;
     string artist_name;
@@ -20,8 +19,7 @@ struct MusicPlayer
     }
 };
 typedef struct MusicPlayer *node;
-
-node Insert(node head, node newnode)
+node Insert(node head, node newnode) //function to add new node to the linked list
 {
     node a;
     if (head == NULL)
@@ -41,32 +39,27 @@ node Insert(node head, node newnode)
     }
     return head;
 }
-int check_presence(node head)
+int check_presence(node a)
 {
-    node a;
-    if (head ==NULL){
-        cout<<"List is empty"<<endl;
-        }
     char found = 'n';
     ifstream fin("Fav.txt",ios::in);
     if(!fin){
         cout<<"Can't open"<<endl;
         }
-    a = head;
     while(fin.eof()==0)
     {
         getline(fin, line);
         stringstream ss(line);
-        getline(fin, s, '|');
-        getline(fin, artist, '|');
-        getline(fin, g);
-        if(a->song == s){found='y';}
+        getline(ss, s, '|');
+        getline(ss, artist, '|');
+        getline(ss, g);
+        if(a->song==s){found='y';}
     }
     fin.close();
     if(found=='y'){return 1;}
-    else{return 0;}
+    return 0;
 }
-node load_data(node head, string songtype)
+node load_data(node head, string songtype) //function to load the particular genre songs into a linked list
 {
     ifstream fin("list.txt", ios::in);
 
@@ -94,7 +87,7 @@ node load_data(node head, string songtype)
     fin.close();
     return head;
 }
-node load_fav(node head)
+node load_fav(node head) //function to load the favourite songs into a linked list
 {
     ifstream fin("Fav.txt", ios::in);
 
@@ -121,7 +114,7 @@ node load_fav(node head)
     return head;
 }
 
-void print_data(node head,string songtype)
+void print_data(node head) //function to print all the data of linked list
 {
     node a;
     if (head == NULL)
@@ -130,7 +123,7 @@ void print_data(node head,string songtype)
         return;
     }
     a = head;
-    while (a->next != NULL && a->genre == songtype)
+    while (a!= NULL)
     {
         cout << "Song name - " << a->song << endl;
         cout << "Singer name - " << a->artist_name << endl;
@@ -139,26 +132,7 @@ void print_data(node head,string songtype)
         a = a->next;
     }
 }
-void print_data1(node head)
-{
-    node a;
-    if (head == NULL)
-    {
-        cout << "List is empty" << endl;
-        return;
-    }
-    a = head;
-    while (a->next != NULL)
-    {
-        cout << "Song name - " << a->song << endl;
-        cout << "Singer name - " << a->artist_name << endl;
-        cout << "Genre - " << a->genre << endl;
-        cout << endl;
-        a = a->next;
-    }
-}
-
-void print_the_one(node one)
+void print_the_one(node one) //function to print a node in particular format
 {
     cout<<"----------------------------------------------------"<<endl;
     cout << " \tSong name - " << one->song << endl;
@@ -168,91 +142,64 @@ void print_the_one(node one)
     cout << endl;
 }
 
-/*int search(node head)
+node search(node head,string name) //function to search a song and play it
 {
+    cout<<"Passed value of string: "<<name<<endl;
     node a;
-    string name;
     if (head == NULL)
     {
         cout << "List is empty" << endl;
     }
-    cout << "Enter the name of song: ";
-    cin >> name;
     a = head;
-    while (a->next != NULL)
+    while (a->song!=name)
     {
+        if(a->next==NULL){
+            cout<<"Song not found :( "<<endl;
+            return head;
+            }
         a = a->next;
-        if (a->song.compare(name))
-        {
-            return 1;
-        }
     }
-    return 0;
-}*/
-void fav(node one)
+    cout<<"Song found"<<endl;
+    cout<<"Currently Playing...."<<endl;
+    print_the_one(a);
+    //if(found==0){cout<<"Song not found :( "<<endl;}
+    return head;
+}
+
+void fav(node one) //function to add song to favourites
 {
-    ofstream fout("Fav.txt",ios::out|ios::app);
+    ofstream fout("Fav.txt",ios::app);
     fout<<one->song<<"|"<<one->artist_name<<"|"<<one->genre<<endl;
     fout.close();
 }
 
-int check_count(node head)
-{
-    int count=0;
-    fstream fio("Fav.txt",ios::out|ios::in);
-     while(fio.eof()==0)
-    {
-        count++;
-        cout<<"present 2"<<endl;
-        getline(fio, line);
-        //cout<<line<<endl;
-        stringstream ss(line);
-        getline(ss, s, '|');
-        getline(ss, artist, '|');
-        getline(ss, g);
-        cout<<"present 3"<<endl;
-        if(head->song.compare(s)==0)
-        {
-            //cout<<"present 4"<<endl;
-            break;
-        }
-    }
-    return count;
-}
-
-void remove_song(string song_match)
+void remove_song(string song_match) //function to remove song from favourites
 {
     //cout<<"present"<<endl;
     fstream fio("Fav.txt",ios::in);
     ofstream fout("temp.txt",ios::out);
     while(!fio.eof())
     {
-       //cout<<"present 2"<<endl;
         getline(fio, line);
-        //cout<<line<<endl;
-        //stringstream ss(line);
-        getline(fio, s,'|');
-        getline(fio, artist,'|');
-        getline(fio, g,'|');
-        cout<<"present 3"<<endl;
+        stringstream ss(line);
+        getline(ss, s,'|');
+        getline(ss, artist,'|');
+        getline(ss, g);
         if(song_match.compare(s)==0)
         {
-            //cout<<"present 4"<<endl;
             ;
         }
         else{
-            //cout<<"present 5"<<endl;
-            fout<<s<<"|"<<artist<<"|"<<g<<"|";
+            fout<<s<<"|"<<artist<<"|"<<g<<endl;
         }
     }
-    //cout<<"present 6"<<endl;
     fio.close();
     fout.close();
     remove("Fav.txt");
     rename("temp.txt","Fav.txt");
 }
 
-void delay(int milliseconds)
+void delay(int milliseconds) //delay function to create effect
 {
     // Storing start time
     clock_t start_time = clock();
@@ -261,7 +208,7 @@ void delay(int milliseconds)
         ;
 }
 
-void play(node current)
+void play(node current) //recursive play function to play songs of a particular genre
 {
     int choice,flag;
     node one = current;
@@ -312,22 +259,16 @@ void play(node current)
     }
     if(choice == 9)
     {
-        /*flag = check_presence(one);
-        if(flag==1){
+        flag = check_presence(one);
+        if(flag==0){
             fav(one);
             cout<<"\nSong added successfully...!!\n"<<endl;
-            one = one->next;
-            cout<<"Next song"<<endl;
-            play(one);
         }
         else{
             cout<<"This song is already exists in favourites"<<endl;
-            one = one->next;
-            cout<<"Next song"<<endl;
-            play(one);
-        }*/
-        fav(one);
-        cout<<"Added successfully"<<endl;
+        }
+        //fav(one);
+        //cout<<"Added successfully"<<endl;
         play(one);
     }
     if(choice!=1||choice!=2||choice!=9){
@@ -335,7 +276,7 @@ void play(node current)
     }
 }
 
-void play1(node current)
+void play1(node current) //recursive play function to play favourite songs
 {
     int choice,flag;
     node one = current;
@@ -388,45 +329,26 @@ void play1(node current)
     }
     if(choice==7)
     {
-       // flag = check_count(one);
-        //remove_song(one->song);
-        //free(one);
-        //current = load_fav(current);
-        
-       // for(int i=0;i<flag;i++){current = current->next;}
-       // play1(current);
-        /*if(one->prev == NULL)
-        {
-            a = one;
-            one = one->next;
-            free(a);
-        }
-        else if(one->next == NULL)
-        {
-            a = one;
-            one = a->prev;
-            one->next = NULL;
-            a->prev = NULL;
-            free(a);
-        }
-        else
-        {
-            a = one;
-            a->prev->next = a->next->prev;
-            one = a->next;
-            a->next = NULL;
-            a->prev = NULL;
-            free(a);
-        }
-        play1(one);*/
+       
+        remove_song(one->song);
         cout<<"Removal currently under progress"<<endl;
-        play1(one);
+        play1(one->next);
     }
-    if(choice!=1||choice!=2){
+    if(choice!=1||choice!=2||choice!=7){
         return;
     }
 }
 
+void free_data(node head) //funncton to free the memory occupied by linked list
+{
+    node current = head;
+    while(current!=NULL)
+    {
+        node next = current->next;
+        free(current);
+        current = next;
+    }
+}
 int main()
 {
     int choose,ch;
@@ -434,7 +356,8 @@ int main()
     node head2 = NULL; //for playlist
     //add to playlist using files
     string song_type;
-    cout << "\n************MUSIC PLAYER*************" << endl;
+    string name;
+    cout << "\n*****MUSIC PLAYER****" << endl;
     cout << "Enter the genre:" << endl;
     cout << " (1) Romantic\n (2) Sad\n (3) Dance Party\n (4) Rap and Bollywood\n (5) Favorite songs\n (0) Exit the program\n Your choice: ";
     cin >> choose;
@@ -443,139 +366,198 @@ int main()
     case 1:
         counter = 0;
         song_type = "Romantic";
-        head1 = load_data(head1, song_type);
+        head1 = load_data(head1, song_type); //forming the linked list of Romantic songs
         cout << "\nSearching Romantic songs..........\n"
              << endl;
-        //try delay function
-        delay(3000);
-
+        delay(3000); //delay to create effect
         cout << "\nTotal Number of Romantic songs are: " << counter << endl;
-        // print_data(head1);
-        cout<<"\n[1] See all songs\n[2] Play\n Your choice: ";
+        do{
+        cout<<"\n[1] See all songs\n[2] Play\n[3] Search a song\n[0] to exit\n Your choice: ";
         cin>>ch;
         switch(ch)
         {
             case 1:
                 cout<<"Displaying all "<<song_type<<" Songs\n"<<endl;
-                print_data1(head1);
+                print_data(head1); //show all Romantic songs
                 break;
             case 2:
                 cout<<"First "<<song_type<<" song coming right up"<<endl;
                 delay(2000);
-                play(head1);
+                play(head1); //call to recursive function play song
+                break;
+            case 3:
+                cout << "Enter the name of song:"<<endl;
+                cin.ignore(); //resetting the buffer
+                getline(cin,name);
+                cout<<"\n"<<name<<endl;
+                head1 = search(head1,name); //search function 
+                break;
+            case 0:
+                cout<<"Thank you for using the program"<<endl;
                 break;
             default:
                 cout<<"Seems you keep selecting wrong options :("<<endl;
         }
+        }while(ch!=0);
+        free_data(head1);
         break;
     case 2:
         counter = 0;
         song_type = "Sad";
-        head1 = load_data(head1, song_type);
+        head1 = load_data(head1, song_type); //forming the linked list of Sad songs
         cout << "\nSearching Sad songs..........\n"
              << endl;
-        //delay
         delay(3000);
         cout << "\nTotal Number of Romantic songs are: " << counter << endl;
-        cout<<"\n[1] See all songs\n[2] Play\n Your choice: ";
+        do{
+        cout<<"\n[1] See all songs\n[2] Play\n[3] Search a song\n[0] to exit\n Your choice: ";
         cin>>ch;
         switch(ch)
         {
             case 1:
                 cout<<"Displaying all "<<song_type<<" Songs\n"<<endl;
-                print_data1(head1);
+                print_data(head1); //show all Sad songs
                 break;
             case 2:
                 cout<<"First "<<song_type<<" song coming right up"<<endl;
                 delay(2000);
-                play(head1);
+                play(head1); //call to recursive function play song
+                break;
+            case 3:
+                cout << "Enter the name of song:"<<endl;
+                cin.ignore(); //resetting the buffer
+                getline(cin,name);
+                //cin.getline(name,50);
+                cout<<"\n"<<name<<endl;
+                head1 = search(head1,name); //search function
+                break;
+            case 0:
+                cout<<"Thank you for using the program"<<endl;
                 break;
             default:
                 cout<<"Seems you keep selecting wrong options :("<<endl;
         }
+        }while(ch!=0);
+        free_data(head1);
         break;
     case 3:
         counter = 0;
         song_type = "Dance Party";
-        head1 = load_data(head1, song_type);
+        head1 = load_data(head1, song_type); //forming the linked list of Dance Party songs
         cout << "\nSearching Dance Party songs..........\n"
 
              << endl;
         //delay
         delay(3000);
         cout << "\nTotal Number of Dance Party songs are: " << counter << endl;
-
-        // print_data(head1);
-        cout<<"\n[1] See all songs\n[2] Play\n Your choice: ";
+        do{
+        cout<<"\n[1] See all songs\n[2] Play\n[3] Search a song\n[0] to exit\n Your choice: ";
         cin>>ch;
         switch(ch)
         {
             case 1:
                 cout<<"Displaying all "<<song_type<<" Songs\n"<<endl;
-                print_data1(head1);
+                print_data(head1); //show all Dance Party songs
                 break;
             case 2:
                 cout<<"First "<<song_type<<" song coming right up"<<endl;
                 delay(2000);
-                play(head1);
+                play(head1); //call to recursive function play song
+                break;
+            case 3:
+                cout << "Enter the name of song:"<<endl;
+                cin.ignore(); //resetting the buffer
+                getline(cin,name);
+                //cin.getline(name,50);
+                cout<<"\n"<<name<<endl;
+                head1 = search(head1,name); //search function
+                break;
+            case 0:
+                cout << "Thank you for using the program" << endl;
                 break;
             default:
                 cout<<"Seems you keep selecting wrong options :("<<endl;
         }
+        }while(ch!=0);
+        free_data(head1);
         break;
     case 4:
         counter = 0;
         song_type = "Rap and Bollywood";
-        head1 = load_data(head1, song_type);
+        head1 = load_data(head1, song_type); //forming the linked list of Rap and Bollywood songs
         cout << "\nSearching Rap and Bollywood songs..........\n"
              << endl;
-        //delay
         delay(3000);
-        // print_data(head1);
         cout << "\nTotal Number of Rap and Bollywood songs are: " << counter << endl;
-        cout<<"\n[1] See all songs\n[2] Play\n Your choice: ";
+        do{
+        cout<<"\n[1] See all songs\n[2] Play\n[3] Search a song\n[0] to exit\n Your choice: ";
         cin>>ch;
         switch(ch)
         {
             case 1:
                 cout<<"Displaying all "<<song_type<<" Songs\n"<<endl;
-                print_data1(head1);
+                print_data(head1); //show all Rap and Bollywood songs
                 break;
             case 2:
                 cout<<"First "<<song_type<<" song coming right up"<<endl;
                 delay(2000);
-                play(head1);
+                play(head1); //call to recursive function play song
+                break;
+            case 3:
+                cout << "Enter the name of song:"<<endl;
+                cin.ignore(); //resetting the buffer
+                getline(cin,name);
+                //cin.getline(name,50);
+                cout<<"\n"<<name<<endl;
+                head1 = search(head1,name); //search function
+                break;
+            case 0:
+                cout << "Thank you for using the program" << endl;
                 break;
             default:
                 cout<<"Seems you keep selecting wrong options :("<<endl;
         }
+        }while(ch!=0);
+        free_data(head1);
         break;
     case 5:
         counter = 0;
-        head2 = load_fav(head2);
+        head2 = load_fav(head2); //forming the linked list of favourite songs
         if(counter==0){break;}
         cout << "\nSearching Your favorite songs..........\n"
              << endl;
-        //delay
         delay(3000);
-        // print_data(head1);
         cout << "\nTotal Number of Favorite songs are: "<< counter-1 << endl;
-        cout<<"\n[1] See all songs\n[2] Play\n Your choice: ";
+        do{
+        cout<<"\n[1] See all songs\n[2] Play\n[3] Search a song\n[0] to exit\n Your choice: ";
         cin>>ch;
         switch(ch)
         {
             case 1:
                 cout<<"Displaying all favorite Songs"<<endl;
-                print_data1(head2);
+                print_data(head2); //show all favourite songs
                 break;
             case 2:
                 cout<<"First favorite song coming right up"<<endl;
                 delay(2000);
-                play1(head2);
+                play1(head2); //call to recursive function play1 song
+                break;
+            case 3:
+                cout << "Enter the name of song:"<<endl;
+                cin.ignore(); //resetting the buffer
+                getline(cin,name);
+                //cin.getline(name,50);
+                cout<<"\n"<<name<<endl;
+                head1 = search(head2,name); //search function
+                break;
+            case 0:
+                cout<<"Thank you for using"<<endl;
                 break;
             default:
                 cout<<"Seems you keep selecting wrong options :("<<endl;
         }
+        }while(ch!=0);
+        free_data(head2);
         break;
     case 0:
         cout << "Thank you for using the program" << endl;
